@@ -1,0 +1,36 @@
+version: '1.0'
+services:
+  postgres-db:
+    container_name: postgres-db
+    image: postgres:16-bookworm
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 0123456789
+      POSTGRES_DB: test-maker-service
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+      # - postgres-data:/var/lib/postgresql/data
+      # - ./pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
+    networks:
+      - APPNet
+    ports:
+      - "5432:5432"
+  api:
+    image: cosmtrek/air
+    restart: on-failure
+    env_file: 
+      - ./.env
+    ports:
+      -  '8000:8000'
+    volumes:
+      - '.:/test-maker-service'
+      - '~/.ssh/id_rsa:/root/.ssh/id_rsa'
+      - '~/.ssh/known_hosts:/root/.ssh/known_hosts'
+      - '~/.gitconfig:/root/.gitconfig'
+      - './docs:/test-maker-service/docs'
+    working_dir: '/test-maker-service'
+    networks:
+      - APPNet
+    depends_on:
+      - postgres-db
+  

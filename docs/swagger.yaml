@@ -1,0 +1,93 @@
+definitions:
+  handlers.AnalyzeResponse:
+    properties:
+      data:
+        $ref: '#/definitions/handlers.AnalyzedPDF'
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  handlers.AnalyzedPDF:
+    properties:
+      id:
+        type: string
+      numberOfPages:
+        type: integer
+      pdfs:
+        items:
+          type: string
+        type: array
+    type: object
+  handlers.ErrorResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  handlers.LinkInput:
+    properties:
+      link:
+        type: string
+    required:
+    - link
+    type: object
+info:
+  contact: {}
+paths:
+  /analyze:
+    post:
+      consumes:
+      - application/json
+      description: Analyze pdf to retrieve pages
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.AnalyzeResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      summary: Analyze pdf to retrieve pages
+      tags:
+      - PDF
+  /analyze/link:
+    post:
+      consumes:
+      - application/json
+      description: Analyze pdf link to retrieve pages
+      parameters:
+      - description: PDF Link
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.LinkInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.AnalyzeResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      summary: Analyze pdf link to retrieve pages
+      tags:
+      - PDF
+swagger: "2.0"
